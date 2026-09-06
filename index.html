@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>2048</title>
+  <title>2048 &mdash; A Classy Puzzle</title>
 
   <link href="style/main.css" rel="stylesheet" type="text/css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="meta/apple-touch-icon.png">
   <link rel="apple-touch-startup-image" href="meta/apple-touch-startup-image-640x1096.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"> <!-- iPhone 5+ -->
@@ -15,9 +18,171 @@
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui">
+
+  <!-- Classy presentation layer. Layered on top of main.css without touching JS hooks. -->
+  <style>
+    :root {
+      --bg-start: #1b2735;
+      --bg-end: #090a0f;
+      --accent: #d4af37;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel-border: rgba(255, 255, 255, 0.12);
+      --text-soft: rgba(255, 255, 255, 0.72);
+    }
+
+    html, body {
+      background: radial-gradient(circle at top, var(--bg-start), var(--bg-end)) fixed;
+      color: #f6f7fb;
+      font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      padding: 40px 20px 60px;
+    }
+
+    /* Header */
+    .heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 68px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    .tagline {
+      display: block;
+      text-align: center;
+      color: var(--text-soft);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin: 0 0 24px;
+    }
+
+    /* Score badges */
+    .scores-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    .score-container,
+    .best-container {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 22px 18px 12px;
+      min-width: 70px;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+    }
+
+    .score-container::after { content: "SCORE"; }
+    .best-container::after  { content: "BEST"; }
+
+    .score-container::after,
+    .best-container::after {
+      position: absolute;
+      top: 7px;
+      left: 0;
+      right: 0;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+
+    /* Buttons */
+    .above-game {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .restart-button,
+    .keep-playing-button,
+    .retry-button {
+      background: linear-gradient(135deg, var(--accent), #b8860b);
+      color: #10131a;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 10px;
+      padding: 12px 22px;
+      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .restart-button:hover,
+    .keep-playing-button:hover,
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(212, 175, 55, 0.5);
+    }
+
+    .game-intro {
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    /* Game board */
+    .game-container {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 15px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Footer / info */
+    .game-explanation {
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .important { color: var(--accent); }
+
+    .footer {
+      text-align: center;
+      color: var(--text-soft);
+      font-size: 13px;
+      margin-top: 30px;
+      line-height: 1.7;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
+    }
+
+    .footer a:hover { border-bottom-color: var(--accent); }
+
+    .divider {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--panel-border), transparent);
+      margin: 28px 0;
+    }
+  </style>
 </head>
 <body>
-  <p class="game-intro"> <strong>Hello Gamers!!</strong></p>
   <div class="container">
     <div class="heading">
       <h1 class="title">2048</h1>
@@ -26,9 +191,10 @@
         <div class="best-container">0</div>
       </div>
     </div>
+    <span class="tagline">Join the numbers &middot; Reach 2048</span>
 
     <div class="above-game">
-      <p class="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
+      <p class="game-intro">Slide the tiles and merge matching numbers to build your way to the <strong>2048 tile!</strong></p>
       <a class="restart-button">New Game</a>
     </div>
 
@@ -36,7 +202,7 @@
       <div class="game-message">
         <p></p>
         <div class="lower">
-	        <a class="keep-playing-button">Keep going</a>
+          <a class="keep-playing-button">Keep going</a>
           <a class="retry-button">Try again</a>
         </div>
       </div>
@@ -76,11 +242,13 @@
     <p class="game-explanation">
       <strong class="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
     </p>
-    <hr>
-    <p>Demo Test project </p>
-    <hr>
-    <p>
-    Created by <a href="http://sathyajithkp10@gmail.com" target="_blank">Sathyajith.</a> for a test project </p>
+
+    <hr class="divider">
+
+    <div class="footer">
+      <p>A polished demo build of the classic 2048 puzzle.</p>
+      <p>Crafted by <a href="mailto:sathyajithkp10@gmail.com">Sathyajith</a> for a test project.</p>
+    </div>
   </div>
 
   <script src="js/bind_polyfill.js"></script>
